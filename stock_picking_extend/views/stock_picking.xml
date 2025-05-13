@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- stock.picking -->
+    <record id="view_picking_extend_form" model="ir.ui.view">
+        <field name="name">stock_picking_invoice_link.stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button
+                    type="object"
+                    name="action_generate_etiquete"
+                    class="oe_stat_button"
+                    string="Etiquete"
+                    icon="fa-pencil-square-o"
+                >
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="report_stock_picking_extend_etiquete" model="ir.actions.report">
+        <field name="name">Etiquete (PDF)</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">stock_picking_extend.report_custom_ticket_bilingual</field>
+        <field name="report_file">stock_picking_extend.report_custom_ticket_bilingual</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_custom_ticket_bilingual">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-foreach="doc.move_ids_without_package" t-as="line">
+
+                <div style="width:99mm; height:88mm; font-size:12px; page-break-after: always;" class="page">
+                    <!-- First Row: Company Name and Address -->
+                    <div class="row">
+                        <div class="col-4" style="text-align:left; padding:10px;">
+                            <strong>BIOVIANDE ROUGE</strong><br/>
+                            <strong>7 Rue 242 Rdc Hay Moulay Abdellah - Casablanca MAROC</strong>
+                        </div>
+                        <div class="col-4" style="text-align:center; padding:10px;">
+        
+                        </div>
+                        <div class="col-4" style="text-align:right; padding:10px; direction:rtl;">
+                            <strong>بيوفيون غوج</strong><br/>
+                            7 زنقة 242 حي مولاي عبد الله الطابق الأرضي<br/>
+                            الدار البيضاء المغرب
+                        </div>
+                    </div>
+                        <style>
+                            table {
+                                width: 100%;
+                                border: none !important;
+                            }
+                            th, td {
+                                padding: 10px;
+                                text-align: center;
+                                border: none !important;
+                            }
+                            tr {
+                                border: none !important;
+                            }
+                            thead {
+                                border: none !important;
+                            }
+                            tbody {
+                                border: none !important;
+                            }
+                        </style>
+        
+                        <!-- Second Row: Product Info -->
+                    
+                        <div class="row">
+                            <div class="col-4" style="text-align:left; padding:10px;">
+                                <strong>VIANDE DESOSSEE DE BOEUF</strong><br/>
+                                <strong>Poids net:</strong> <t t-esc="line.product_uom_qty"/><t t-esc="line.product_id.uom_name"/>
+                            </div>
+                            <div class="col-4" style="text-align:center; padding:10px;">
+                                <strong>رقم الاعتماد الصحي</strong><br/>
+                                <span style="border:1px solid #000; border-radius:25%; padding:1mm;">MA ADVR.5.7.21</span><br/>
+                                <strong>N° d’agrément sanitaire:</strong>
+                            </div>
+                            <div class="col-4" style="text-align:right; padding:10px; direction:rtl;">
+                                <strong><t t-esc="line.product_id.arab_name"/></strong><br/>
+                                الوزن الصافي <strong><t t-esc="line.product_uom_qty"/><t t-esc="line.product_id.uom_name"/></strong>
+                            </div>
+                        </div>
+                        <table>
+                            <thead class="thead">
+                                <tr>
+                                    <th><strong>Date de production</strong></th>
+                                    <th><t t-esc="line.date"/></th>
+                                    <th>تاريخ الإنتاج</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>A consommer jusqu'au</td>
+                                    <td> <t t-esc="doc.date_done"/></td>
+                                    <td>يستهلك إلى غاية</td>
+                                </tr>
+                                <tr>
+                                    <td>N° LOT</td>
+                                    <td> <t t-esc="doc.date_done"/></td>
+                                    <td>رقم الحصة</td>
+                                </tr>
+                            </tbody>
+                        </table>
+        
+                        <!-- Fourth Row: Storage and Logo -->
+                        <div class="row">
+                            <div class="col-4" style="text-align:left; padding:10px;">
+                                <strong>À conserver à : 3°C</strong><br/>
+                                
+                            </div>
+                            <div class="col-4" style="text-align:center; padding:10px;">
+            
+                                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" class="company-logo" style="height:60px;"/>
+                            </div>
+            
+                            <div class="col-4" style="text-align:right; padding:10px; direction:rtl;">
+                                <strong>يحفظ بدرجة حرارة </strong>
+                                3°C
+                            </div>
+                        </div>
+    
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

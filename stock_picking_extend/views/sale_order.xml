@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_saleorder_document_inherit_extend" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <t t-set="address">
+
+                
+            </t>
+        </xpath>
+        <xpath expr="//div[@class='page']" position="replace">
+        <div class="page">
+            <div class="oe_structure"/>
+
+            <h2 class="mt-4">
+                <span>Devis</span>
+            </h2>
+
+            <table class="table table-sm o_main_table table-borderless mt-4">
+                <!-- In case we want to repeat the header, remove "display: table-row-group" -->
+                <thead style="display: table-row-group">
+                    <tr>
+                        <th name="th_description" class="text-start">Designation</th>
+                        <th name="th_description" class="text-start">Prix</th>
+                    </tr>
+                </thead>
+                <tbody class="sale_tbody">
+
+
+                    <t t-foreach="doc.order_line" t-as="line">
+
+
+                        <tr >
+                            <t >
+                                <td name="td_name"><span t-field="line.product_id.name"></span></td>
+                                <td name="td_priceunit">
+                                    <span t-field="line.price_total"></span>
+                                </td>
+
+
+
+                            </t>
+
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+
+        </div>
+    </xpath>
+    </template>
+</odoo>
